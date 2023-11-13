@@ -38,17 +38,15 @@ export default function Chat() {
     socketRef.current.on('connect', () => {
       console.log('Connected to chat server');
       setIsConnected(true);
-      console.log(socketRef.current);
     });
 
     socketRef.current.emit('fetch-messages');
 
     socketRef.current.on('messages-to-client', (messageArray: Message[]) => {
-      setMessages(messageArray.messages.reverse());
+      setMessages(messageArray.messages);
     });
 
     socketRef.current.on('message-to-client', (messageObject: Message) => {
-      console.log(messageObject);
       setMessages(prevMessages => [...prevMessages, messageObject]);
     });
 
