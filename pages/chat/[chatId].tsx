@@ -23,6 +23,8 @@ export default function Chat() {
   const [showAlert, setShowAlert] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
+  const userId = 'fire';
+
 
   const accessToken =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNiN2ZiMTExZTpmaXJlIiwiaWF0IjoxNjk5ODU5NzQ0LCJleHAiOjE3MDA0NjQ1NDR9.6HgHtjDxO6trBsxj-BCVTCHlE69zt05uEn2Mn7OhQNY';
@@ -93,7 +95,9 @@ export default function Chat() {
           <ExitNotice />
           <div>
             {messages.map(msg => (
+              msg.userId === userId ? 
               <MyChat key={msg.id} msg={msg} />
+              : <OtherChat key={msg.id} msg={msg}/>
             ))}
           </div>
           <div ref={messagesEndRef} />
