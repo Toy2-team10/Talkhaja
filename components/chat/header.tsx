@@ -10,7 +10,9 @@ export default function ChatroomHeader({ chatId }: string) {
 
   const [isMenuOpen, setMenuOpen] = useState(false);
   const accessToken =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNiN2ZiMTExZTp1c2VyNSIsImlhdCI6MTY5OTU5OTI3NywiZXhwIjoxNzAwMjA0MDc3fQ.xQ34bIb3kC-ISYgYtCQypNN6A5T7A3TJh_TX31hXVZI';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNiN2ZiMTExZTpmaXJlIiwiaWF0IjoxNjk5ODU5NzQ0LCJleHAiOjE3MDA0NjQ1NDR9.6HgHtjDxO6trBsxj-BCVTCHlE69zt05uEn2Mn7OhQNY';
+
+   // 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNiN2ZiMTExZTp1c2VyNSIsImlhdCI6MTY5OTU5OTI3NywiZXhwIjoxNzAwMjA0MDc3fQ.xQ34bIb3kC-ISYgYtCQypNN6A5T7A3TJh_TX31hXVZI';
 
   const toggleMenu = () => {
     setMenuOpen(!isMenuOpen);
@@ -38,7 +40,7 @@ export default function ChatroomHeader({ chatId }: string) {
         },
       );
       console.log(response);
-      router.push('.');
+      router.push('/my-chat-list');
       // 채팅방 나가기 성공 후 추가적인 로직이 필요할 수 있습니다.
     } catch (error) {
       console.error(error);

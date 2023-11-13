@@ -11,6 +11,7 @@ import { CLIENT_URL } from '../../apis/constant';
 import styles from './Chat.module.scss';
 import styles2 from '../../components/chat/Chat.module.scss';
 import ChatroomHeader from '../../components/chat/header';
+import Footer from '@/components/chat/footer';
 
 export default function Chat() {
   const router = useRouter();
@@ -22,50 +23,56 @@ export default function Chat() {
   const [showAlert, setShowAlert] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-  const socketRef = useRef<Socket | null>(null);
 
   const accessToken =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNiN2ZiMTExZTp1c2VyMyIsImlhdCI6MTY5OTUzMzExMiwiZXhwIjoxNzAwMTM3OTEyfQ.4eslctzcBGQAwkcKT97IbF0i-9-MZ0kvhjY4A6sK8Wo';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNiN2ZiMTExZTpmaXJlIiwiaWF0IjoxNjk5ODU5NzQ0LCJleHAiOjE3MDA0NjQ1NDR9.6HgHtjDxO6trBsxj-BCVTCHlE69zt05uEn2Mn7OhQNY';
+    //'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNiN2ZiMTExZTp1c2VyMyIsImlhdCI6MTY5OTUzMzExMiwiZXhwIjoxNzAwMTM3OTEyfQ.4eslctzcBGQAwkcKT97IbF0i-9-MZ0kvhjY4A6sK8Wo';
 
-  useEffect(() => {
-    socketRef.current = io(`${CLIENT_URL}?chatId=${chatId}`, {
+    useEffect(() => {
+      socketInit();
+  }, []);
+
+  const socket = io(`wss://fastcampus-chat.net/chat?chatId=${chatId}`, {
       extraHeaders: {
-        Authorization: `Bearer ${accessToken}`,
-        serverId: process.env.NEXT_PUBLIC_API_KEY,
+          Authorization: `Bearer ${accessToken}`,
+          serverId: `${process.env.NEXT_PUBLIC_API_KEY}`,
       },
-    });
+  });
 
-    socketRef.current.on('connect', () => {
-      console.log('Connected to chat server');
-      setIsConnected(true);
-    });
+  const socketInit = () => {
+      socket.on('connect', () => {
+          console.log('Socket connected');
+      });
 
-    socketRef.current.emit('fetch-messages');
+      socket.emit('fetch-messages');
 
-    socketRef.current.on('messages-to-client', (messageArray: Message[]) => {
-      setMessages(messageArray.messages);
-    });
+      socket.on('messages-to-client', (messageObject) => {
+          setMessages(messageObject.messages);
+      });
 
-    socketRef.current.on('message-to-client', (messageObject: Message) => {
-      setMessages(prevMessages => [...prevMessages, messageObject]);
-    });
+      socket.on('message-to-client', (messageObject) => {
+          setMessages((prevMessages) => [...prevMessages, messageObject]);
+      });
 
-    socketRef.current.on('join', (messageObject: JoinersData) => {
-      console.log(messageObject, '123123123');
-    });
+      socket.on('disconnect', () => {
+          console.log('Socket disconnected');
+      });
 
-    socketRef.current.on('leave', (messageObject: LeaverData) => {
-      console.log(messageObject, '123123123');
-    });
+      //socket.emit('users');
 
-    return () => {
-      socketRef.current?.off('connect');
-      socketRef.current?.off('messages-to-client');
-      socketRef.current?.off('message-to-client');
-      socketRef.current?.disconnect();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chatId]); // 이제 chatId와 accessToken이 변경될 때
+      // socket.on('users-to-client', (data) => {
+      //     console.log(data, 'users-to-client');
+      // });
+
+      // socket.on('join', (data) => {
+      //     console.log(data, 'join');
+      //     
+      // });
+      // socket.on('leave', (data) => {
+      //     console.log(data, 'leave');
+      //     
+      // });
+  };
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
@@ -76,23 +83,6 @@ export default function Chat() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
-  const handleSendMessage = (event: React.FormEvent) => {
-    event.preventDefault();
-
-    if (!message.trim()) {
-      setShowAlert(true);
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 3000);
-      return;
-    }
-
-    if (socketRef.current?.connected) {
-      socketRef.current.emit('message-to-server', message);
-      setMessage('');
-    }
-  };
 
   return (
     <>
@@ -110,20 +100,7 @@ export default function Chat() {
           {showAlert && <ChatAlert />}
         </div>
       </div>
-      <form className={styles2.footer} onSubmit={handleSendMessage}>
-        <input
-          type="text"
-          placeholder="대화를 시작해보세요!"
-          className={styles2.chatInput}
-          value={message}
-          onChange={e => setMessage(e.target.value)}
-        />
-        <button
-          className={styles2.triangle_button}
-          type="submit"
-          aria-label="Submit"
-        />
-      </form>
+      <Footer socket={socket}/>
     </>
   );
 }
