@@ -3,7 +3,7 @@ import { userIdState } from '@/recoil/atoms/userIdState';
 import { setStorage } from '@/utils/loginStorage';
 import { useRouter } from 'next/router';
 import { useSetRecoilState } from 'recoil';
-import Jwtinterceptors from './JwtInterceptor';
+import Jwtinterceptors from './JwtInterceptors';
 
 const Auth = () => {
   const { instance } = Jwtinterceptors();

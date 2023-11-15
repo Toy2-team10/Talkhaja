@@ -9,7 +9,7 @@ import {
   ref,
   uploadString,
 } from 'firebase/storage';
-import Jwtinterceptors from '@/apis/JwtInterceptor';
+import Jwtinterceptors from '@/apis/JwtInterceptors';
 import { logout } from '@/apis/etc';
 import { useRouter } from 'next/router';
 import styles from './MyPage.module.scss';
