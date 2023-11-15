@@ -7,6 +7,7 @@ import CreateChat from '@/components/ChatList/CreateChat';
 import { useRecoilValue } from 'recoil';
 import { userIdState } from '@/recoil/atoms/userIdState';
 import formatTime from '@/utils/timeFormat';
+import { formattingTime, todayDate } from '@/utils/formattedTimeData';
 import chatListAPI from '../../apis/chatListAPI';
 import styles from './ChatList.module.scss';
 
@@ -24,8 +25,11 @@ export default function AllChatList() {
 
   const participateChat = async (e: React.MouseEvent<HTMLButtonElement>) => {
     if (e.target instanceof HTMLButtonElement) {
-      await chatListAPI.participateChat(e.target.name);
-      router.push(`/chat/${e.target.name}`);
+      await chatListAPI.participateChat(e.target.id);
+      router.push({
+        pathname: `/chat/${e.target.id}`,
+        query: { name: e.target.name },
+      });
     }
   };
 
@@ -40,12 +44,18 @@ export default function AllChatList() {
   const routerChat = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
   };
+
+  const today = new Date();
+  const isToday = today.toISOString().split('T')[0];
+
   return (
     <ul>
       <CreateChat />
       {allChatList.map(chat => {
         const { timeDiffText, className } = formatTime(chat.updatedAt);
         const isincluded = chat.users.some(checkIncluded);
+        const dateString = todayDate(chat.updatedAt);
+        const formattedTime = formattingTime(chat.updatedAt);
         return (
           <li key={chat.id}>
             <Link
@@ -53,7 +63,6 @@ export default function AllChatList() {
                 pathname: `/chat/${chat.id}`,
                 query: { name: chat.name },
               }}
-              as={`/chat/${chat.id}`}
               className={styles.container}
               onClick={isincluded ? undefined : routerChat}
             >
@@ -74,14 +83,17 @@ export default function AllChatList() {
                     {chat.latestMessage?.text}
                   </div>
                 </div>
-                <div className={styles.right}>
-                  <div className={styles.chat_updated}>
+                <div>
+                  {/* <div className={styles.chat_updated}>
                     <span className={styles[className]}>{timeDiffText}</span>
-                  </div>
+                  </div> */}
+                  <div className={styles.chat_updated}>{chat.updatedAt}</div>
+
                   {!isincluded && (
                     <button
                       type="button"
-                      name={chat.id}
+                      id={chat.id}
+                      name={chat.name}
                       onClick={participateChat}
                     >
                       참여
