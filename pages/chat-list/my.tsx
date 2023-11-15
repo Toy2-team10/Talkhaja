@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Chat } from '@/@types/types';
 import Image from 'next/image';
-import CreateChat from '@/components/ChatList/CreateChat';
 import chatListAPI from '../../apis/chatListAPI';
 import styles from './ChatList.module.scss';
 
@@ -24,9 +23,7 @@ export default function MyChatList() {
   }, []);
 
   return (
-    <>
-      <CreateChat />
-      <div className={styles.list_container}>
+    <div className={styles.list_container}>
         <div>숙소와 채팅</div>
         <ul>
           {myHostChatList.map(chat => (
@@ -100,6 +97,5 @@ export default function MyChatList() {
           ))}
         </ul>
       </div>
-    </>
   );
 }
