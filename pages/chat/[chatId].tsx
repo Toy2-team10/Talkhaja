@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { io } from 'socket.io-client';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import MyChat from '@/components/chat/mychat';
 import OtherChat from '@/components/chat/otherchat';
 import EntryNotice from '@/components/chat/entryNotice';
@@ -12,6 +12,7 @@ import { useRouter } from 'next/router';
 import { userIdState } from '@/recoil/atoms/userIdState';
 import { getStorage } from '@/utils/loginStorage';
 // import chatSocket from '@/apis/socket';
+import { showNavigationState } from '@/recoil/atoms/showNavigationState';
 import { CLIENT_URL } from '../../apis/constant';
 import styles2 from '../../components/chat/Chat.module.scss';
 import ChatroomHeader from '../../components/chat/header';
@@ -22,7 +23,9 @@ export default function Chatting() {
   const { chatId } = router.query;
 
   const [chatData, setChatData] = useState<Chat | null>();
-
+  const [showNavigation, setShowNavigation] =
+    useRecoilState(showNavigationState);
+  setShowNavigation(false);
   useEffect(() => {
     const fetchChatData = async () => {
       try {

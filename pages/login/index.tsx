@@ -2,9 +2,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import Auth from '@/apis/Auth';
+import { useRecoilState } from 'recoil';
+import { showNavigationState } from '@/recoil/atoms/showNavigationState';
 import styles from './login.module.scss';
 
 export default function Login() {
+  const [showNavigation, setShowNavigation] =
+    useRecoilState(showNavigationState);
+  setShowNavigation(false);
   const { login } = Auth();
   const {
     register,

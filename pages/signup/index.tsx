@@ -7,6 +7,8 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import Link from 'next/link';
+import { showNavigationState } from '@/recoil/atoms/showNavigationState';
+import { useRecoilState } from 'recoil';
 import styles from './signUp.module.scss';
 
 interface RequestBody {
@@ -39,6 +41,10 @@ export default function SignUp() {
   const [defaultImgUrl, setDefaultImgUrl] = useState<string | null>(null);
   const [checkId, setCheckId] = useState(false);
   const [checkIdMessage, setCheckIdMessage] = useState('');
+  const [showNavigation, setShowNavigation] =
+    useRecoilState(showNavigationState);
+  setShowNavigation(false);
+
   const storage = getStorage(app);
 
   const getDefaultImageUrl = async () => {
