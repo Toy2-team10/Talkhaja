@@ -84,10 +84,10 @@ export default function AllChatList() {
                   </div>
                 </div>
                 <div>
-                  {/* <div className={styles.chat_updated}>
+                  <div className={styles.chat_updated}>
                     <span className={styles[className]}>{timeDiffText}</span>
-                  </div> */}
-                  <div className={styles.chat_updated}>{chat.updatedAt}</div>
+                  </div>
+                  {/* <div className={styles.chat_updated}>{chat.updatedAt}</div> */}
 
                   {!isincluded && (
                     <button
